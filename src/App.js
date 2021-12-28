@@ -3,11 +3,13 @@ import React, { useEffect, useState } from 'react';
 import Tmdb from './Tmdb';
 import MovieRow from './comps/MovieRow';
 import FeaturedMovie from './comps/FeaturedMovie';
+import Header from './comps/Header';
 
 export default () => {
 
   const [movieList, setMovieList] = useState([]);
   const [featuredData, setFeaturedData] = useState(null);
+  const [blackHeader, setBlackHeader] = useState(false);
 
 
   useEffect(() => {
@@ -27,8 +29,27 @@ export default () => {
     loadAll();
   }, []);
 
+  useEffect(() => {
+    const scrollListener = () => {
+      if (window.scrollY > 10) {
+        setBlackHeader(true);
+      } else {
+        setBlackHeader(false);
+      }
+    }
+
+    window.addEventListener('scroll', scrollListener);
+
+    return () => {
+      window.removeEventListener('scroll', scrollListener);
+    }
+
+  }, []);
+
   return (
     <div className="page">
+
+      <Header black={blackHeader}/>
 
       {featuredData &&
         <FeaturedMovie item={featuredData} />
@@ -39,6 +60,12 @@ export default () => {
           <MovieRow key={key} title={item.title} items={item.items} />
         ))}
       </section>
+
+      <footer>
+        Made by fcVcnte~ <br/>
+        Netflix Brand images right <br/>
+        Themoviedb data right
+      </footer>
     </div>
   );
 }
